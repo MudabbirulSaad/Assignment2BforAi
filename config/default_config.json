@@ -1,0 +1,41 @@
+{
+  "system": {
+    "speed_limit": 60,
+    "intersection_delay": 30,
+    "max_routes": 5
+  },
+  "models": {
+    "lstm": {
+      "hidden_size": 64,
+      "num_layers": 2,
+      "dropout": 0.2,
+      "learning_rate": 0.001,
+      "batch_size": 32,
+      "epochs": 100
+    },
+    "gru": {
+      "hidden_size": 64,
+      "num_layers": 2,
+      "dropout": 0.2,
+      "learning_rate": 0.001,
+      "batch_size": 32,
+      "epochs": 100
+    },
+    "custom": {
+      "hidden_size": 64,
+      "learning_rate": 0.001,
+      "batch_size": 32,
+      "epochs": 100
+    }
+  },
+  "gui": {
+    "window_width": 1024,
+    "window_height": 768,
+    "map_zoom": 14,
+    "theme": "light"
+  },
+  "data": {
+    "sequence_length": 16,
+    "train_test_split": 0.8
+  }
+}
