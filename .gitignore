@@ -79,8 +79,3 @@ docs/
 # Temporary files
 temp/
 tmp/
-
-# Excel temporary files
-~$*.xlsx
-~$*.xls
-*.xlk
