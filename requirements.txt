@@ -1,0 +1,30 @@
+# Core dependencies
+numpy==1.26.4
+pandas==2.2.3
+matplotlib==3.10.1
+scikit-learn==1.5.1
+
+# PyTorch for machine learning models
+torch==2.6.0
+
+# Data processing
+openpyxl==3.1.5  # For Excel file handling
+
+# Visualization and UI
+rich==13.9.4     # For enhanced console output
+
+# Math and statistics
+scipy==1.14.1    # For scientific computing
+
+# Date and time handling
+python-dateutil==2.9.0.post0
+
+# Progress tracking and visualization
+tqdm==1.16.0     # For progress bars
+
+# Optional dependencies
+# For GPU acceleration (uncomment if needed)
+# torch-cuda
+
+# Development tools
+pytest==8.3.4    # For testing
