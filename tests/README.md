@@ -2,10 +2,19 @@
 
 This directory contains test cases and testing utilities for the Traffic-based Route Guidance System (TBRGS).
 
-## Test Categories
+## Files and Directories
 
-- `test_models/`: Tests for machine learning models
-- `test_integration/`: Tests for the integration of ML models with search algorithms
-- `test_gui/`: Tests for the graphical user interface
-- `test_utils/`: Tests for utility functions
-- `test_cases.py`: Predefined test cases for the TBRGS system
+- `cases/`: Directory containing test case files with different origin-destination pairs and parameters
+  - Contains 10 test case files (`test_case1.txt` through `test_case10.txt`) with various route scenarios
+- `run_cases.py`: Script to run and evaluate the route finder on the test cases
+- `__init__.py`: Python package initialization file
+
+## Usage
+
+To run the test cases, use the following command:
+
+```bash
+python tests/run_cases.py
+```
+
+This will execute all test cases and provide a summary of the results, including route quality, execution time, and algorithm performance.

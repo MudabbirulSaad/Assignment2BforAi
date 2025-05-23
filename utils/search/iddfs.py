@@ -64,7 +64,7 @@ def depth_limited_search(current, destinations, edges, limit, visited, came_from
                 
     return None, nodes_generated, came_from
 
-def iddfs(origin, destinations, edges, max_depth=50):
+def iddfs(origin, destinations, edges, node_positions=None, max_depth=50):
     """
     Iterative Deepening Depth-First Search (IDDFS) implementation.
     - Uses depth-limited search with increasing depth limits

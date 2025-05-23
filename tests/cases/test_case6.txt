@@ -1,0 +1,19 @@
+# Boroondara Traffic Network: TOORAK_RD W of WARRIGAL_RD to BARKERS_RD W of DENMARK_ST (GBFS)
+# Scenario: Finding a route that prioritizes proximity to destination at each step
+test_name=Test Case 6
+
+# Node descriptions
+# 2000: TOORAK_RD W of WARRIGAL_RD/060 H06    # Major eastern intersection with heavy traffic flow
+# 3812: CAMBERWELL_RD NW of TRAFALGAR_RD/059 K02  # Commercial hub with shopping centers
+# 4035: TOORAK_RD W of BURKE_RD/045 H08       # Busy intersection with tram interchange
+# 4043: TOORAK_RD W of GLENFERRIE_RD/045 H06  # Retail and restaurant precinct
+# 4321: TOORAK_RD W of AUBURN_RD/045 H05      # Residential area with moderate traffic
+# 4030: KILBY_RD W of BURKE_RD/045 K02     # Access point to Kooyong area
+# 3126: CANTERBURY_RD W of WARRIGAL_RD/046 H11       # Near major road crossing
+# 3001: BARKERS_RD W of CHURCH_ST/045 A08 # University precinct with student traffic
+# 3002: BARKERS_RD W of DENMARK_ST/045 B08    # Northern residential zone
+
+origin=2000           # Starting at TOORAK_RD W of WARRIGAL_RD
+destination=3002      # Destination is BARKERS_RD W of DENMARK_ST
+algorithm=GBFS     # Using Greedy Best-First Search algorithm
+description=Finding a route from TOORAK_RD W of WARRIGAL_RD to BARKERS_RD W of DENMARK_ST that always moves toward the destination

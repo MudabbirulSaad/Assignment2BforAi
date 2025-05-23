@@ -8,25 +8,33 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 import torch
+import json
 from datetime import datetime
 
-from lstm_model import TrafficLSTMPredictor
-from gru_model import TrafficGRUPredictor
-from cnnrnn_model import TrafficCNNRNNPredictor
+# Add parent directory to path to import from utils
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-def load_or_train_models(data_path, models_dir='models/saved', results_dir='results', force_retrain=False):
+# Use absolute imports instead of relative imports
+from models.lstm_model import TrafficLSTMPredictor
+from models.gru_model import TrafficGRUPredictor
+from models.cnnrnn_model import TrafficCNNRNNPredictor
+
+def load_or_train_models(data_path, config):
     """
     Loads existing models or trains new ones if they don't exist.
     
     Args:
         data_path: Path to the preprocessed data file (NPZ format)
-        models_dir: Directory to save/load models
-        results_dir: Directory to save results
-        force_retrain: If True, retrain models even if they already exist
+        config: Configuration dictionary loaded from JSON
         
     Returns:
         Dictionary containing the trained models
     """
+    # Get paths from config
+    models_dir = config['paths']['models_dir']
+    results_dir = config['paths']['results_dir']
+    force_retrain = config['training']['force_retrain']
     # Create directories if they don't exist
     os.makedirs(models_dir, exist_ok=True)
     os.makedirs(results_dir, exist_ok=True)
@@ -36,35 +44,38 @@ def load_or_train_models(data_path, models_dir='models/saved', results_dir='resu
     gru_path = os.path.join(models_dir, 'gru_model.pth')
     custom_path = os.path.join(models_dir, 'custom_model.pth')
     
-    # Initialize models
+    # Initialize models using config parameters
     lstm_model = TrafficLSTMPredictor(
-        sequence_length=16,
-        hidden_size=64,
-        num_layers=2,
-        learning_rate=0.001,
-        batch_size=32,
-        dropout=0.2
+        sequence_length=config['data']['sequence_length'],
+        hidden_size=config['models']['lstm']['hidden_size'],
+        num_layers=config['models']['lstm']['num_layers'],
+        learning_rate=config['models']['lstm']['learning_rate'],
+        batch_size=config['models']['lstm']['batch_size'],
+        dropout=config['models']['lstm']['dropout'],
+        config=config
     )
     
     gru_model = TrafficGRUPredictor(
-        sequence_length=16,
-        hidden_size=64,
-        num_layers=2,
-        learning_rate=0.001,
-        batch_size=32,
-        dropout=0.2
+        sequence_length=config['data']['sequence_length'],
+        hidden_size=config['models']['gru']['hidden_size'],
+        num_layers=config['models']['gru']['num_layers'],
+        learning_rate=config['models']['gru']['learning_rate'],
+        batch_size=config['models']['gru']['batch_size'],
+        dropout=config['models']['gru']['dropout'],
+        config=config
     )
     
     custom_model = TrafficCNNRNNPredictor(
-        sequence_length=16,
-        hidden_size=64,
-        num_layers=2,
-        learning_rate=0.001,
-        batch_size=32,
-        kernel_size=3,
-        cnn_channels=16,
-        dropout=0.2,
-        rnn_type='lstm'
+        sequence_length=config['data']['sequence_length'],
+        hidden_size=config['models']['custom']['hidden_size'],
+        num_layers=config['models']['custom']['num_layers'],
+        learning_rate=config['models']['custom']['learning_rate'],
+        batch_size=config['models']['custom']['batch_size'],
+        kernel_size=config['models']['custom']['kernel_size'],
+        cnn_channels=config['models']['custom']['cnn_channels'],
+        dropout=config['models']['custom']['dropout'],
+        rnn_type=config['models']['custom']['rnn_type'],
+        config=config
     )
     
     # Train or load LSTM model
@@ -72,8 +83,8 @@ def load_or_train_models(data_path, models_dir='models/saved', results_dir='resu
         print("Training LSTM model...")
         lstm_model.train(
             data_path=data_path,
-            epochs=50,
-            patience=10,
+            epochs=config['models']['lstm']['epochs'],
+            patience=config['training']['patience'],
             model_save_path=lstm_path
         )
         lstm_model.plot_history(save_path=os.path.join(results_dir, 'lstm_training_history.png'))
@@ -86,8 +97,8 @@ def load_or_train_models(data_path, models_dir='models/saved', results_dir='resu
             print("Training a new LSTM model...")
             lstm_model.train(
                 data_path=data_path,
-                epochs=50,
-                patience=10,
+                epochs=config['training']['fallback_epochs'],
+                patience=config['training']['patience'],
                 model_save_path=lstm_path
             )
             lstm_model.plot_history(save_path=os.path.join(results_dir, 'lstm_training_history.png'))
@@ -97,8 +108,8 @@ def load_or_train_models(data_path, models_dir='models/saved', results_dir='resu
         print("Training GRU model...")
         gru_model.train(
             data_path=data_path,
-            epochs=50,
-            patience=10,
+            epochs=config['models']['gru']['epochs'],
+            patience=config['training']['patience'],
             model_save_path=gru_path
         )
         gru_model.plot_history(save_path=os.path.join(results_dir, 'gru_training_history.png'))
@@ -111,8 +122,8 @@ def load_or_train_models(data_path, models_dir='models/saved', results_dir='resu
             print("Training a new GRU model...")
             gru_model.train(
                 data_path=data_path,
-                epochs=50,
-                patience=10,
+                epochs=config['training']['fallback_epochs'],
+                patience=config['training']['patience'],
                 model_save_path=gru_path
             )
             gru_model.plot_history(save_path=os.path.join(results_dir, 'gru_training_history.png'))
@@ -122,8 +133,8 @@ def load_or_train_models(data_path, models_dir='models/saved', results_dir='resu
         print("Training custom CNN-RNN model...")
         custom_model.train(
             data_path=data_path,
-            epochs=50,
-            patience=10,
+            epochs=config['models']['custom']['epochs'],
+            patience=config['training']['patience'],
             model_save_path=custom_path
         )
         custom_model.plot_history(save_path=os.path.join(results_dir, 'custom_training_history.png'))
@@ -136,8 +147,8 @@ def load_or_train_models(data_path, models_dir='models/saved', results_dir='resu
             print("Training a new custom CNN-RNN model...")
             custom_model.train(
                 data_path=data_path,
-                epochs=50,
-                patience=10,
+                epochs=config['training']['fallback_epochs'],
+                patience=config['training']['patience'],
                 model_save_path=custom_path
             )
             custom_model.plot_history(save_path=os.path.join(results_dir, 'custom_training_history.png'))
@@ -148,15 +159,17 @@ def load_or_train_models(data_path, models_dir='models/saved', results_dir='resu
         'custom': custom_model
     }
 
-def evaluate_models(models, data_path, results_dir='results'):
+def evaluate_models(models, data_path, config):
     """
     Evaluates all models on the test set and compares their performance.
     
     Args:
         models: Dictionary containing the trained models
         data_path: Path to the preprocessed data file (NPZ format)
-        results_dir: Directory to save evaluation results
+        config: Configuration dictionary loaded from JSON
     """
+    # Get results directory from config
+    results_dir = config['paths']['results_dir']
     # Load test data
     data = np.load(data_path)
     X_test, y_test = data['X_test'], data['y_test']
@@ -255,77 +268,189 @@ def evaluate_models(models, data_path, results_dir='results'):
     
     return results
 
-def main():
+def main(model_name=None, epochs=None, force_retrain=False):
     """
-    Main function to train and evaluate all models.
-    """
-    # Path to the preprocessed data
-    data_path = 'data/processed/sequence_data.npz'
+    Main function to train and evaluate models.
     
-    # Check if data exists, if not create synthetic data for testing
+    Args:
+        model_name (str, optional): Name of the specific model to train ('lstm', 'gru', or 'custom'). 
+                                   If None, all models will be trained/evaluated.
+        epochs (int, optional): Number of epochs for training. If None, uses the value from config.
+        force_retrain (bool): Whether to force retraining even if a saved model exists.
+    """
+    # Load configuration
+    config_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'config', 'default_config.json')
+    with open(config_path, 'r') as f:
+        config = json.load(f)
+    
+    # Override config values if specified in arguments
+    if force_retrain:
+        config['training']['force_retrain'] = True
+    
+    # Update epochs in config if specified
+    if epochs is not None:
+        if model_name:
+            if model_name.lower() in config['models']:
+                config['models'][model_name.lower()]['epochs'] = epochs
+                print(f"Setting {epochs} epochs for {model_name} model")
+        else:
+            # Update epochs for all models
+            for model_key in config['models']:
+                config['models'][model_key]['epochs'] = epochs
+            print(f"Setting {epochs} epochs for all models")
+    
+    # Path to the preprocessed data from config
+    data_path = config['paths']['sequence_data']
+    
+    # Ensure we're using only the real SCATS data
     if not os.path.exists(data_path):
-        print(f"Warning: {data_path} not found. Creating synthetic data for testing.")
-        data_path = 'data/processed/synthetic_data.npz'
-        
-        # Create synthetic data directly
-        def create_synthetic_data(save_path, num_samples=1000, sequence_length=16):
-            # Ensure the directory exists
-            os.makedirs(os.path.dirname(save_path), exist_ok=True)
-            
-            # Generate synthetic time series data
-            np.random.seed(42)
-            t = np.linspace(0, 100, num_samples)
-            # Create a sine wave with noise
-            raw_values = 0.5 + 0.5 * np.sin(0.1 * t) + 0.1 * np.random.randn(len(t))
-            
-            # Calculate min and max for scaling parameters
-            data_min = np.min(raw_values)
-            data_max = np.max(raw_values)
-            
-            # Normalize values to [0, 1] range
-            values = (raw_values - data_min) / (data_max - data_min)
-            
-            # Create sequences
-            X, y = [], []
-            for i in range(len(values) - sequence_length):
-                X.append(values[i:i + sequence_length])
-                y.append(values[i + sequence_length])
-            
-            # Convert to numpy arrays
-            X = np.array(X).reshape(-1, sequence_length, 1)
-            y = np.array(y)
-            
-            # Split into train and test sets (80/20)
-            split = int(len(X) * 0.8)
-            X_train, y_train = X[:split], y[:split]
-            X_test, y_test = X[split:], y[split:]
-            
-            # Save to file with scaling parameters
-            np.savez(save_path, 
-                     X_train=X_train, y_train=y_train, 
-                     X_test=X_test, y_test=y_test,
-                     data_min=data_min, data_max=data_max)
-            print(f"Synthetic data saved to {save_path}")
-            return save_path
-        
-        create_synthetic_data(data_path, num_samples=1000, sequence_length=16)
+        raise FileNotFoundError(f"Error: {data_path} not found. Please run data_processing.py first to process the SCATS data.")
     
-    # Train or load models
-    models = load_or_train_models(
-        data_path=data_path,
-        models_dir='models/saved',
-        results_dir='results',
-        force_retrain=False
-    )
+    # Ensure model checkpoint directory exists
+    os.makedirs(config['paths']['models_dir'], exist_ok=True)
+    os.makedirs(config['paths']['results_dir'], exist_ok=True)
     
-    # Evaluate models
-    results = evaluate_models(
-        models=models,
-        data_path=data_path,
-        results_dir='results'
-    )
+    # Train specific model or all models
+    if model_name:
+        model_name = model_name.lower()
+        if model_name not in ['lstm', 'gru', 'custom']:
+            print(f"Error: Unknown model '{model_name}'. Valid options are 'lstm', 'gru', or 'custom'.")
+            return
+        
+        print(f"Training/loading only the {model_name.upper()} model...")
+        
+        # Create a modified config for single model training
+        single_model_config = config.copy()
+        
+        # Set force_retrain for the specific model
+        if model_name == 'lstm':
+            # Create a dictionary with only the LSTM model
+            models = {}
+            lstm_model = TrafficLSTMPredictor(
+                sequence_length=config['data']['sequence_length'],
+                hidden_size=config['models']['lstm']['hidden_size'],
+                num_layers=config['models']['lstm']['num_layers'],
+                learning_rate=config['models']['lstm']['learning_rate'],
+                batch_size=config['models']['lstm']['batch_size'],
+                dropout=config['models']['lstm']['dropout'],
+                config=config
+            )
+            
+            # Train or load the model
+            lstm_path = os.path.join(config['paths']['models_dir'], 'lstm_model.pth')
+            if not os.path.exists(lstm_path) or force_retrain:
+                print(f"Training {model_name.upper()} model...")
+                lstm_model.train(
+                    data_path=data_path,
+                    epochs=config['models']['lstm']['epochs'],
+                    patience=config['training']['patience'],
+                    model_save_path=lstm_path
+                )
+                lstm_model.plot_history(save_path=os.path.join(config['paths']['results_dir'], 'lstm_training_history.png'))
+            else:
+                print(f"Loading existing {model_name.upper()} model...")
+                lstm_model.load_model(lstm_path)
+            
+            models['lstm'] = lstm_model
+            
+        elif model_name == 'gru':
+            # Create a dictionary with only the GRU model
+            models = {}
+            gru_model = TrafficGRUPredictor(
+                sequence_length=config['data']['sequence_length'],
+                hidden_size=config['models']['gru']['hidden_size'],
+                num_layers=config['models']['gru']['num_layers'],
+                learning_rate=config['models']['gru']['learning_rate'],
+                batch_size=config['models']['gru']['batch_size'],
+                dropout=config['models']['gru']['dropout'],
+                config=config
+            )
+            
+            # Train or load the model
+            gru_path = os.path.join(config['paths']['models_dir'], 'gru_model.pth')
+            if not os.path.exists(gru_path) or force_retrain:
+                print(f"Training {model_name.upper()} model...")
+                gru_model.train(
+                    data_path=data_path,
+                    epochs=config['models']['gru']['epochs'],
+                    patience=config['training']['patience'],
+                    model_save_path=gru_path
+                )
+                gru_model.plot_history(save_path=os.path.join(config['paths']['results_dir'], 'gru_training_history.png'))
+            else:
+                print(f"Loading existing {model_name.upper()} model...")
+                gru_model.load_model(gru_path)
+            
+            models['gru'] = gru_model
+            
+        elif model_name == 'custom':
+            # Create a dictionary with only the custom model
+            models = {}
+            custom_model = TrafficCNNRNNPredictor(
+                sequence_length=config['data']['sequence_length'],
+                hidden_size=config['models']['custom']['hidden_size'],
+                num_layers=config['models']['custom']['num_layers'],
+                learning_rate=config['models']['custom']['learning_rate'],
+                batch_size=config['models']['custom']['batch_size'],
+                kernel_size=config['models']['custom']['kernel_size'],
+                cnn_channels=config['models']['custom']['cnn_channels'],
+                dropout=config['models']['custom']['dropout'],
+                rnn_type=config['models']['custom']['rnn_type'],
+                config=config
+            )
+            
+            # Train or load the model
+            custom_path = os.path.join(config['paths']['models_dir'], 'custom_model.pth')
+            if not os.path.exists(custom_path) or force_retrain:
+                print(f"Training {model_name.upper()} model...")
+                custom_model.train(
+                    data_path=data_path,
+                    epochs=config['models']['custom']['epochs'],
+                    patience=config['training']['patience'],
+                    model_save_path=custom_path
+                )
+                custom_model.plot_history(save_path=os.path.join(config['paths']['results_dir'], 'custom_training_history.png'))
+            else:
+                print(f"Loading existing {model_name.upper()} model...")
+                custom_model.load_model(custom_path)
+            
+            models['custom'] = custom_model
+        
+        # Evaluate only the specified model
+        results = evaluate_models(
+            models={model_name: models[model_name]},
+            data_path=data_path,
+            config=config
+        )
+    else:
+        # Train or load all models
+        models = load_or_train_models(
+            data_path=data_path,
+            config=config
+        )
+        
+        # Evaluate all models
+        results = evaluate_models(
+            models=models,
+            data_path=data_path,
+            config=config
+        )
     
     print("Model training and evaluation completed.")
 
 if __name__ == "__main__":
-    main()
+    import argparse
+    
+    # Create argument parser
+    parser = argparse.ArgumentParser(description='Train and evaluate traffic prediction models')
+    parser.add_argument('--model', type=str, choices=['lstm', 'gru', 'custom'], 
+                        help='Specific model to train (lstm, gru, or custom)')
+    parser.add_argument('--epochs', type=int, help='Number of epochs for training')
+    parser.add_argument('--force-retrain', action='store_true', 
+                        help='Force retraining even if saved model exists')
+    
+    # Parse arguments
+    args = parser.parse_args()
+    
+    # Run main function with parsed arguments
+    main(model_name=args.model, epochs=args.epochs, force_retrain=args.force_retrain)

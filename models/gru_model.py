@@ -12,6 +12,7 @@ import matplotlib.pyplot as plt
 from torch.utils.data import DataLoader, TensorDataset
 import os
 import time
+import json
 
 class GRUModel(nn.Module):
     """
@@ -80,7 +81,7 @@ class TrafficGRUPredictor:
     Class for training, evaluating, and using GRU models for traffic prediction.
     """
     def __init__(self, sequence_length=16, hidden_size=64, num_layers=2, learning_rate=0.001, 
-                 batch_size=32, dropout=0.2, device=None):
+                 batch_size=32, dropout=0.2, device=None, config=None):
         """
         Initialize the GRU predictor.
         
@@ -388,14 +389,26 @@ class TrafficGRUPredictor:
         if not os.path.exists(model_path):
             raise FileNotFoundError(f"Model file not found: {model_path}")
         
+        # Add numpy.core.multiarray._reconstruct to safe globals for PyTorch 2.6+
         try:
-            # Try to load with weights_only=True to avoid serialization issues
-            checkpoint = torch.load(model_path, map_location=self.device, weights_only=True)
-            weights_only = True
-        except TypeError:
-            # Fallback for older PyTorch versions that don't support weights_only
-            checkpoint = torch.load(model_path, map_location=self.device)
+            import numpy.core.multiarray
+            torch.serialization.add_safe_globals([numpy.core.multiarray._reconstruct])
+        except (ImportError, AttributeError):
+            pass
+        
+        try:
+            # First try loading with weights_only=False for backward compatibility
+            checkpoint = torch.load(model_path, map_location=self.device, weights_only=False)
             weights_only = False
+        except (TypeError, RuntimeError):
+            try:
+                # If that fails, try with weights_only=True
+                checkpoint = torch.load(model_path, map_location=self.device, weights_only=True)
+                weights_only = True
+            except Exception as e:
+                # Last resort: try without specifying weights_only
+                checkpoint = torch.load(model_path, map_location=self.device)
+                weights_only = False
         
         if weights_only:
             # When using weights_only, we need to manually recreate the model structure
@@ -485,32 +498,38 @@ def main():
     """
     Main function to demonstrate the usage of the GRU model.
     """
-    # Path to the preprocessed data
-    data_path = '../data/processed/sequence_data.npz'
+    # Load configuration
+    config_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'config', 'default_config.json')
+    with open(config_path, 'r') as f:
+        config = json.load(f)
     
-    # Path to save the trained model
-    model_save_path = '../models/saved/gru_model.pth'
+    # Get paths from config
+    data_path = config['paths']['sequence_data']
+    models_dir = config['paths']['models_dir']
+    results_dir = config['paths']['results_dir']
+    model_save_path = os.path.join(models_dir, 'gru_model.pth')
     
     # Initialize the GRU predictor
     predictor = TrafficGRUPredictor(
-        sequence_length=16,
-        hidden_size=64,
-        num_layers=2,
-        learning_rate=0.001,
-        batch_size=32,
-        dropout=0.2
+        sequence_length=config['data']['sequence_length'],
+        hidden_size=config['models']['gru']['hidden_size'],
+        num_layers=config['models']['gru']['num_layers'],
+        learning_rate=config['models']['gru']['learning_rate'],
+        batch_size=config['models']['gru']['batch_size'],
+        dropout=config['models']['gru']['dropout'],
+        config=config
     )
     
     # Train the model
     history = predictor.train(
         data_path=data_path,
-        epochs=50,
-        patience=10,
+        epochs=config['models']['gru']['epochs'],
+        patience=config['training']['patience'],
         model_save_path=model_save_path
     )
     
     # Plot training history
-    predictor.plot_history(save_path='../results/gru_training_history.png')
+    predictor.plot_history(save_path=os.path.join(results_dir, 'gru_training_history.png'))
     
     print("GRU model training completed.")
 

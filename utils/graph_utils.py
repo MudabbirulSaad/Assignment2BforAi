@@ -123,6 +123,30 @@ class TrafficGraph(Graph):
         
         return max(10, min(speed, self.speed_limit))  # Ensure speed is between 10 and speed_limit
     
+    def calculate_distance(self, source, destination):
+        """
+        Calculates the physical distance between two adjacent SCATS sites.
+        
+        Args:
+            source: The source SCATS site ID.
+            destination: The destination SCATS site ID.
+            
+        Returns:
+            The distance in meters, or float('inf') if nodes are not connected.
+        """
+        # Get the distance between the nodes from the edge data
+        distance = 0
+        for neighbor, dist in self.get_neighbors(source):
+            if neighbor == destination:
+                distance = dist
+                break
+        
+        if distance == 0:
+            # If not directly connected, return infinity
+            return float('inf')
+            
+        return distance
+        
     def calculate_travel_time(self, source, destination):
         """
         Calculates the travel time between two adjacent SCATS sites.
@@ -135,13 +159,9 @@ class TrafficGraph(Graph):
             The travel time in seconds.
         """
         # Get the distance between the nodes
-        distance = 0
-        for neighbor, dist in self.get_neighbors(source):
-            if neighbor == destination:
-                distance = dist
-                break
+        distance = self.calculate_distance(source, destination)
         
-        if distance == 0:
+        if distance == float('inf'):
             return float('inf')  # Nodes are not connected
         
         # Get the traffic flow and calculate the speed
@@ -149,8 +169,9 @@ class TrafficGraph(Graph):
         speed = self.calculate_speed(flow)
         
         # Calculate travel time: time = distance / speed
-        # Convert distance to km and speed to km/h to get time in hours
-        travel_time_hours = distance / speed
+        # Convert distance from meters to km to match speed in km/h
+        distance_km = distance / 1000.0
+        travel_time_hours = distance_km / speed
         
         # Convert to seconds and add intersection delay
         travel_time_seconds = travel_time_hours * 3600 + self.intersection_delay

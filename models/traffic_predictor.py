@@ -8,11 +8,12 @@ import os
 import numpy as np
 import torch
 import pandas as pd
+import json
 from datetime import datetime, timedelta
 
-from lstm_model import TrafficLSTMPredictor
-from gru_model import TrafficGRUPredictor
-from cnnrnn_model import TrafficCNNRNNPredictor
+from .lstm_model import TrafficLSTMPredictor
+from .gru_model import TrafficGRUPredictor
+from .cnnrnn_model import TrafficCNNRNNPredictor
 
 # Add parent directory to path to import from utils
 import sys
@@ -24,7 +25,7 @@ class TrafficPredictor:
     """
     Class for making traffic flow predictions and updating the traffic graph.
     """
-    def __init__(self, models_dir='models/saved', model_type='ensemble'):
+    def __init__(self, models_dir='models/checkpoints', model_type='ensemble', config=None):
         """
         Initialize the traffic predictor.
         
@@ -35,7 +36,16 @@ class TrafficPredictor:
         self.models_dir = models_dir
         self.model_type = model_type
         self.models = {}
-        self.sequence_length = 16  # Number of time steps used for prediction
+        
+        # Load configuration if not provided
+        if config is None:
+            config_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'config', 'default_config.json')
+            with open(config_path, 'r') as f:
+                self.config = json.load(f)
+        else:
+            self.config = config
+            
+        self.sequence_length = self.config['data']['sequence_length']  # Number of time steps used for prediction
         
         # Load models
         self._load_models()
@@ -44,6 +54,13 @@ class TrafficPredictor:
         """
         Load the trained ML models.
         """
+        # Print debug information about the models directory
+        print(f"Looking for models in directory: {self.models_dir}")
+        print(f"Absolute path: {os.path.abspath(self.models_dir)}")
+        print(f"Directory exists: {os.path.exists(self.models_dir)}")
+        if os.path.exists(self.models_dir):
+            print(f"Contents of models directory: {os.listdir(self.models_dir)}")
+        
         # Define model paths
         lstm_path = os.path.join(self.models_dir, 'lstm_model.pth')
         gru_path = os.path.join(self.models_dir, 'gru_model.pth')
@@ -55,6 +72,12 @@ class TrafficPredictor:
             'gru': os.path.exists(gru_path),
             'custom': os.path.exists(custom_path)
         }
+        
+        print(f"Model paths and existence:")
+        print(f"LSTM: {lstm_path} - Exists: {models_exist['lstm']}")
+        print(f"GRU: {gru_path} - Exists: {models_exist['gru']}")
+        print(f"Custom: {custom_path} - Exists: {models_exist['custom']}")
+        
         
         # Load LSTM model if needed
         if self.model_type in ['lstm', 'ensemble'] and models_exist['lstm']:
@@ -225,6 +248,11 @@ def main():
     """
     Main function to demonstrate the usage of the traffic predictor.
     """
+    # Load configuration
+    config_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'config', 'default_config.json')
+    with open(config_path, 'r') as f:
+        config = json.load(f)
+        
     # Create a simple traffic graph for testing
     nodes = {
         1: (0, 0),
@@ -255,7 +283,7 @@ def main():
     }
     
     # Initialize traffic predictor
-    predictor = TrafficPredictor(model_type='lstm')
+    predictor = TrafficPredictor(models_dir='models/checkpoints', model_type='lstm', config=config)
     
     # Update traffic graph with predicted flows
     updated_graph = predictor.update_traffic_graph(graph, historical_data_dict)

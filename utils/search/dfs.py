@@ -1,7 +1,7 @@
 # utils/search/dfs.py
 # Depth-First Search implementation adapted from Assignment 2A
 
-def dfs(origin, destinations, edges):
+def dfs(origin, destinations, edges, node_positions=None):
     """
     Depth-First Search implementation.
     - Expands nodes in ascending order when equal

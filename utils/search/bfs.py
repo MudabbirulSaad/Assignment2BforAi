@@ -3,7 +3,7 @@
 
 from collections import deque
 
-def bfs(origin, destinations, edges):
+def bfs(origin, destinations, edges, node_positions=None):
     """
     Breadth-First Search implementation.
     - Expands nodes in ascending order when equal

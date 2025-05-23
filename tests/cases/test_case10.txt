@@ -1,0 +1,25 @@
+# Boroondara Traffic Network: LSTM Model Evaluation
+# Scenario: Evaluating the LSTM model's ability to predict traffic flow at key Boroondara intersections
+test_name=Test Case 10
+
+# Model Description:
+# The LSTM (Long Short-Term Memory) model is trained on historical traffic data from the Boroondara area
+# It predicts traffic flow values based on previous time steps of traffic data
+# This test evaluates its performance on unseen test data
+
+# Test Parameters:
+# - Using 20 samples from test dataset
+# - Evaluating metrics: MSE, RMSE, MAE
+# - Testing prediction accuracy during peak hours
+# - Evaluating at SCATS sites: 2000, 3812, 4035, 4043, 4321
+
+# SCATS Sites for Evaluation:
+# 2000: TOORAK_RD W of WARRIGAL_RD/060 H06    # Major eastern intersection with heavy traffic flow
+# 3812: CAMBERWELL_RD NW of TRAFALGAR_RD/059 K02  # Commercial hub with shopping centers
+# 4035: TOORAK_RD W of BURKE_RD/045 H08       # Busy intersection with tram interchange
+# 4043: TOORAK_RD W of GLENFERRIE_RD/045 H06  # Retail and restaurant precinct
+# 4321: TOORAK_RD W of AUBURN_RD/045 H05      # Residential area with moderate traffic
+
+model=lstm        # Using LSTM model for traffic prediction
+num_samples=20    # Number of test samples to evaluate
+description=Evaluating LSTM model performance for predicting traffic flow at key Boroondara intersections
