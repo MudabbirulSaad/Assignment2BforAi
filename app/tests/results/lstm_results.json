@@ -1,0 +1,352 @@
+[
+    {
+        "scenario": "Scenario 1: Warrigal Rd to Maroondah Hwy",
+        "origin": "2000",
+        "destination": "2200",
+        "time_periods": [
+            {
+                "time_period": "Morning Peak",
+                "travel_time": 6.422551263776599,
+                "distance": 3.9483675091843993,
+                "algorithm": "astar",
+                "route_count": 3
+            },
+            {
+                "time_period": "Midday",
+                "travel_time": 6.422551263776599,
+                "distance": 3.9483675091843993,
+                "algorithm": "astar",
+                "route_count": 3
+            },
+            {
+                "time_period": "Evening Peak",
+                "travel_time": 6.422551263776599,
+                "distance": 3.9483675091843993,
+                "algorithm": "astar",
+                "route_count": 3
+            },
+            {
+                "time_period": "Night",
+                "travel_time": 6.422551263776599,
+                "distance": 3.9483675091843993,
+                "algorithm": "astar",
+                "route_count": 3
+            }
+        ]
+    },
+    {
+        "scenario": "Scenario 2: Maroondah Hwy to Canterbury Rd",
+        "origin": "2200",
+        "destination": "3122",
+        "time_periods": [
+            {
+                "time_period": "Morning Peak",
+                "travel_time": 5.085662369580634,
+                "distance": 3.0571082463870893,
+                "algorithm": "astar",
+                "route_count": 3
+            },
+            {
+                "time_period": "Midday",
+                "travel_time": 5.085662369580634,
+                "distance": 3.0571082463870893,
+                "algorithm": "astar",
+                "route_count": 3
+            },
+            {
+                "time_period": "Evening Peak",
+                "travel_time": 5.085662369580634,
+                "distance": 3.0571082463870893,
+                "algorithm": "astar",
+                "route_count": 3
+            },
+            {
+                "time_period": "Night",
+                "travel_time": 5.085662369580634,
+                "distance": 3.0571082463870893,
+                "algorithm": "astar",
+                "route_count": 3
+            }
+        ]
+    },
+    {
+        "scenario": "Scenario 3: High St to Warrigal Rd",
+        "origin": "0970",
+        "destination": "2000",
+        "time_periods": [
+            {
+                "time_period": "Morning Peak",
+                "travel_time": null,
+                "distance": null,
+                "algorithm": null,
+                "route_count": 0
+            },
+            {
+                "time_period": "Midday",
+                "travel_time": null,
+                "distance": null,
+                "algorithm": null,
+                "route_count": 0
+            },
+            {
+                "time_period": "Evening Peak",
+                "travel_time": null,
+                "distance": null,
+                "algorithm": null,
+                "route_count": 0
+            },
+            {
+                "time_period": "Night",
+                "travel_time": null,
+                "distance": null,
+                "algorithm": null,
+                "route_count": 0
+            }
+        ]
+    },
+    {
+        "scenario": "Scenario 4: Bulleen Rd to Burke Rd",
+        "origin": "2827",
+        "destination": "2825",
+        "time_periods": [
+            {
+                "time_period": "Morning Peak",
+                "travel_time": 2.6518361090477427,
+                "distance": 1.4345574060318282,
+                "algorithm": "astar",
+                "route_count": 3
+            },
+            {
+                "time_period": "Midday",
+                "travel_time": 2.6518361090477427,
+                "distance": 1.4345574060318282,
+                "algorithm": "astar",
+                "route_count": 3
+            },
+            {
+                "time_period": "Evening Peak",
+                "travel_time": 2.6518361090477427,
+                "distance": 1.4345574060318282,
+                "algorithm": "astar",
+                "route_count": 3
+            },
+            {
+                "time_period": "Night",
+                "travel_time": 2.6518361090477427,
+                "distance": 1.4345574060318282,
+                "algorithm": "astar",
+                "route_count": 3
+            }
+        ]
+    },
+    {
+        "scenario": "Scenario 5: Princess St to High St",
+        "origin": "2820",
+        "destination": "2846",
+        "time_periods": [
+            {
+                "time_period": "Morning Peak",
+                "travel_time": 12.593481221298918,
+                "distance": 7.7289874808659444,
+                "algorithm": "astar",
+                "route_count": 3
+            },
+            {
+                "time_period": "Midday",
+                "travel_time": 12.593481221298918,
+                "distance": 7.7289874808659444,
+                "algorithm": "astar",
+                "route_count": 3
+            },
+            {
+                "time_period": "Evening Peak",
+                "travel_time": 12.593481221298918,
+                "distance": 7.7289874808659444,
+                "algorithm": "astar",
+                "route_count": 3
+            },
+            {
+                "time_period": "Night",
+                "travel_time": 12.593481221298918,
+                "distance": 7.7289874808659444,
+                "algorithm": "astar",
+                "route_count": 3
+            }
+        ]
+    },
+    {
+        "scenario": "Scenario 6: Burke Rd to Warrigal Rd",
+        "origin": "2825",
+        "destination": "0970",
+        "time_periods": [
+            {
+                "time_period": "Morning Peak",
+                "travel_time": null,
+                "distance": null,
+                "algorithm": null,
+                "route_count": 0
+            },
+            {
+                "time_period": "Midday",
+                "travel_time": null,
+                "distance": null,
+                "algorithm": null,
+                "route_count": 0
+            },
+            {
+                "time_period": "Evening Peak",
+                "travel_time": null,
+                "distance": null,
+                "algorithm": null,
+                "route_count": 0
+            },
+            {
+                "time_period": "Night",
+                "travel_time": null,
+                "distance": null,
+                "algorithm": null,
+                "route_count": 0
+            }
+        ]
+    },
+    {
+        "scenario": "Scenario 7: High St to Bulleen Rd",
+        "origin": "2846",
+        "destination": "2827",
+        "time_periods": [
+            {
+                "time_period": "Morning Peak",
+                "travel_time": 14.536791088612551,
+                "distance": 9.024527392408368,
+                "algorithm": "astar",
+                "route_count": 3
+            },
+            {
+                "time_period": "Midday",
+                "travel_time": 14.536791088612551,
+                "distance": 9.024527392408368,
+                "algorithm": "astar",
+                "route_count": 3
+            },
+            {
+                "time_period": "Evening Peak",
+                "travel_time": 14.536791088612551,
+                "distance": 9.024527392408368,
+                "algorithm": "astar",
+                "route_count": 3
+            },
+            {
+                "time_period": "Night",
+                "travel_time": 14.536791088612551,
+                "distance": 9.024527392408368,
+                "algorithm": "astar",
+                "route_count": 3
+            }
+        ]
+    },
+    {
+        "scenario": "Scenario 8: Warrigal Rd to Burke Rd",
+        "origin": "2000",
+        "destination": "2825",
+        "time_periods": [
+            {
+                "time_period": "Morning Peak",
+                "travel_time": 12.706410440543289,
+                "distance": 7.804273627028859,
+                "algorithm": "astar",
+                "route_count": 3
+            },
+            {
+                "time_period": "Midday",
+                "travel_time": 12.706410440543289,
+                "distance": 7.804273627028859,
+                "algorithm": "astar",
+                "route_count": 3
+            },
+            {
+                "time_period": "Evening Peak",
+                "travel_time": 12.706410440543289,
+                "distance": 7.804273627028859,
+                "algorithm": "astar",
+                "route_count": 3
+            },
+            {
+                "time_period": "Night",
+                "travel_time": 12.706410440543289,
+                "distance": 7.804273627028859,
+                "algorithm": "astar",
+                "route_count": 3
+            }
+        ]
+    },
+    {
+        "scenario": "Scenario 9: Princess St to Maroondah Hwy",
+        "origin": "2820",
+        "destination": "2200",
+        "time_periods": [
+            {
+                "time_period": "Morning Peak",
+                "travel_time": 10.613077757004623,
+                "distance": 6.408718504669749,
+                "algorithm": "astar",
+                "route_count": 3
+            },
+            {
+                "time_period": "Midday",
+                "travel_time": 10.613077757004623,
+                "distance": 6.408718504669749,
+                "algorithm": "astar",
+                "route_count": 3
+            },
+            {
+                "time_period": "Evening Peak",
+                "travel_time": 10.613077757004623,
+                "distance": 6.408718504669749,
+                "algorithm": "astar",
+                "route_count": 3
+            },
+            {
+                "time_period": "Night",
+                "travel_time": 10.613077757004623,
+                "distance": 6.408718504669749,
+                "algorithm": "astar",
+                "route_count": 3
+            }
+        ]
+    },
+    {
+        "scenario": "Scenario 10: Bulleen Rd to Warrigal Rd",
+        "origin": "2827",
+        "destination": "0970",
+        "time_periods": [
+            {
+                "time_period": "Morning Peak",
+                "travel_time": null,
+                "distance": null,
+                "algorithm": null,
+                "route_count": 0
+            },
+            {
+                "time_period": "Midday",
+                "travel_time": null,
+                "distance": null,
+                "algorithm": null,
+                "route_count": 0
+            },
+            {
+                "time_period": "Evening Peak",
+                "travel_time": null,
+                "distance": null,
+                "algorithm": null,
+                "route_count": 0
+            },
+            {
+                "time_period": "Night",
+                "travel_time": null,
+                "distance": null,
+                "algorithm": null,
+                "route_count": 0
+            }
+        ]
+    }
+]
